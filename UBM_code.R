@@ -276,7 +276,7 @@ sc = 3
 rda_sp = rda(decostand(abund, method = 'hellinger') ~ BT + BS + Phi, data = env)
 rda_sc = scores(rda_sp, scaling = sc)
 
-biplot = ggplot() +
+biplot <- ggplot() +
   geom_segment(data = data.frame(rda_sc$biplot),
                mapping = aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
                arrow = arrow(length = unit(4, "mm")),
@@ -292,17 +292,17 @@ biplot
 
 # RDA species
 rda_sp <- biplot +
-  geom_point(data = data.frame(rda_sc$species, SCBD_df),
+  geom_point(data = data.frame(rda_sc$species, species),
              mapping = aes(x = RDA1, y = RDA2, fill = guilds, size = scbd),
              shape = 22, alpha = 0.7) +
-  geom_label_repel(data = data.frame(rda_sc$species, SCBD_df) %>%
+  geom_label_repel(data = data.frame(rda_sc$species, species) %>%
                      mutate(should_be_labeled=ifelse(scbd > 0.033,TRUE, FALSE)) %>%
                      filter(should_be_labeled==TRUE),
                    aes(x = RDA1, y = RDA2, label=species, fill=guilds, alpha = 0.9),
                    show.legend = FALSE, size = 3,
                    box.padding = unit(0.5, "lines")) +
   guides(size = FALSE, alpha = FALSE,
-         fill = guide_legend(title = "Guilds", 
+         fill = guide_legend(title = "Groups", 
                              override.aes = list(size = 3))) + 
   labs(x = "RDA1 (18.01%)", y = "RDA2 (0.05%)")
 
