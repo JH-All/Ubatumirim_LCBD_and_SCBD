@@ -106,13 +106,20 @@ Sites_plt <- ggplot(data = species) +
   labs(x = "Occurrence (Number of Sites)", 
        y = "SCBD") +
 geom_point(aes(x = n_sites, y = scbd),
-             size = 4, shape = 21, alpha = 0.6,
+             size = 5, shape = 21, alpha = 0.7,
            fill = "darkgreen") +
 geom_smooth(aes(x = n_sites, y = scbd),
-              method = 'lm', se = TRUE, color = "black") +
-  scale_x_continuous(breaks = seq(0, 25, by = 5)) + 
+              method = 'lm', se = TRUE, color = "blue4", fill = "black") +
+  scale_x_continuous(breaks = seq(0, 25, by = 5)) +
+  scale_y_continuous(breaks = seq(-0.005, 0.18, by = 0.02),
+                     limits = c(-0.005, 0.18))+
   theme_classic(base_size = 15)+
-  ylim(-0.005, 0.18)
+  theme(axis.text.x=element_text(size=10),
+        axis.text.y=element_text(size=10),
+        axis.title=element_text(size=12),
+        legend.key.size = unit(0.7, 'cm'),
+        legend.title = element_text(size = 14),
+        legend.text = element_text(size = 12))
 
 Sites_plt
 
@@ -122,12 +129,20 @@ Rabundance_plt <- ggplot(data = species) +
   labs(x = "Relative Total Abundance", 
        y = "SCBD") +
   geom_point(aes(x = relative_abundance, y = scbd),
-             size = 4, shape = 21, alpha = 0.6,
+             size = 5, shape = 21, alpha = 0.7,
              fill = "darkgreen") +
   geom_smooth(aes(x = relative_abundance, y = scbd),
-              method = 'lm', se = TRUE, color = "black") +
+              method = 'lm', se = TRUE, color = "blue4", fill = "black") +
   theme_classic(base_size = 15)+
-  ylim(-0.005, 0.18)
+  theme(axis.text.x=element_text(size=10),
+        axis.text.y=element_text(size=10),
+        axis.title=element_text(size=12),
+        legend.key.size = unit(0.7, 'cm'),
+        legend.title = element_text(size = 14),
+        legend.text = element_text(size = 12))+
+  scale_y_continuous(breaks = seq(-0.005, 0.18, by = 0.02),
+                     limits = c(-0.005, 0.18))+
+  scale_x_continuous(breaks = seq(0, 0.3, by = 0.05))
 
 Rabundance_plt
 
@@ -148,15 +163,10 @@ env$relative_abundance <- env$abundance / (sum(env$abundance))
 
 species$common_length <- as.numeric(species$common_length)
 trait_categ <- cbind.data.frame(
-  guilds = species$guilds,
-  genus = species$genus,
-  family = species$family,
-  order = species$order,
-  class = species$class
+  guilds = species$guilds
 )
 trait_num <- cbind.data.frame(
-  common_length = species$common_length,
-  relative_abundance = species$relative_abundance
+  common_length = species$common_length
 )
 rownames(species) <- species$initials
 rownames(trait_categ) <- rownames(species)
@@ -167,7 +177,7 @@ dist_mist <- as.matrix(dist_mist)
 env$fric <- dbFD(dist_mist, abund)$FRic
 
 # Beta Regression Results
-mod1 <- betareg(LCBD ~ fric + Rich + relative_abundance,
+mod1 <- betareg(LCBD ~ fric + relative_abundance + Rich,
                 data = env)
 car::vif(mod1)
 summary(mod1)
@@ -219,13 +229,13 @@ LCBD_BS <-  ggplot(data = env ) +
   scale_y_continuous(breaks = seq(0, 0.1, by = .01)) +
   guides(fill = guide_legend(title = "Depth")) +
   theme_classic(base_size = 15) +
-  theme(legend.position="bottom")
+  theme(legend.position="none")
 
-LCBD <- plot_grid(LCBD_Phi, LCBD_BT, LCBD_BS, ncol=1, nrow=3, 
-                  labels = "AUTO", label_size = 12, hjust = -4.5)
-LCBD
+# LCBD <- plot_grid(LCBD_Phi, LCBD_BT, LCBD_BS, ncol=1, nrow=3, 
+               #   labels = "AUTO", label_size = 12, hjust = -4.5)
+# LCBD
 
-ggsave('LCBD.png', LCBD, units = 'cm', width = 15, height = 40)
+# ggsave('LCBD.png', LCBD, units = 'cm', width = 15, height = 40)
 
 LCBD_Fric <- ggplot(data = env) + 
   labs(x = "Functional Richness", 
@@ -236,7 +246,7 @@ LCBD_Fric <- ggplot(data = env) +
               method = 'lm', se = TRUE, color = "black") +
 scale_y_continuous(breaks = seq(0, 0.1, by = .01))+
   guides(fill = guide_legend(title = "Depth (m)")) +
-  theme_classic(base_size = 15) +
+  theme_classic(base_size = 15)+
   theme(legend.position="none")
 
 LCBD_Rich <- ggplot(data = env) + 
@@ -250,7 +260,7 @@ LCBD_Rich <- ggplot(data = env) +
   scale_x_continuous(breaks = seq(0,40, by=10))+
   guides(fill = guide_legend(title = "Depth (m)"))+
   theme_classic(base_size = 15)+
-  theme(legend.position="bottom")
+  theme(legend.position="none")
 
 LCBD_abundance <- ggplot(data = env) + 
   labs(x = "Relative Abundance", 
@@ -265,11 +275,39 @@ LCBD_abundance <- ggplot(data = env) +
   theme_classic(base_size = 15)+
   theme(legend.position="none") 
 
-LCBD_Community <- plot_grid(LCBD_abundance, LCBD_Fric, LCBD_Rich, ncol=1, nrow=3, 
-                  labels = "AUTO", label_size = 12, hjust = -4.5)
-LCBD_Community
+# LCBD_Community <- plot_grid(LCBD_abundance, LCBD_Fric, LCBD_Rich, ncol=1, nrow=3, 
+                #   labels = "AUTO", label_size = 12, hjust = -4.5)
+# LCBD_Community
 
-ggsave('LCBD_Community.png', LCBD_Community, units = 'cm', width = 15, height = 30)
+# ggsave('LCBD_Community.png', LCBD_Community, units = 'cm', width = 15, height = 30)
+
+Legend_Plot <- ggplot(data = env) + 
+  labs(x = "Relative Abundance", 
+       y = "LCBD") +
+  geom_point(aes(x = relative_abundance, y = LCBD, fill = factor(transect)),
+             size = 4, shape = 21, alpha = 0.7) +
+  geom_smooth(aes(x = relative_abundance, y = LCBD),
+              method = 'lm', se = TRUE, color = "black") +
+  scale_y_continuous(breaks = seq(0, 0.1, by = .01))+
+  xlim(0,0.25)+
+  guides(fill = guide_legend(title = "Depth (m)"))+
+  theme_classic(base_size = 15)+
+  theme(legend.position="bottom")
+
+legend <- cowplot::get_legend(Legend_Plot)
+
+
+LCBD_ALL <- plot_grid(LCBD_Fric, LCBD_BT, 
+                      LCBD_Rich,
+                      LCBD_BS, LCBD_abundance, LCBD_Phi,
+                     ncol= 2, nrow = 3,
+          labels = c("A", "D", "B", "E", "C", "F"), label_size = 12, hjust = -4.5)
+LCBD_ALL
+
+LCBD_ALL_NEW <- cowplot::plot_grid(LCBD_ALL, legend, ncol = 1, nrow=2,
+                   rel_heights = c(2,0.5,2))
+
+ggsave('LCBD_All.png', LCBD_ALL_NEW, units = 'cm', width = 25, height = 25)
 
 # Redundancy Analysis -----------------------------------------
 sc = 3
