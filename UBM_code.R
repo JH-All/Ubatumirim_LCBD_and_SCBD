@@ -123,7 +123,7 @@ geom_smooth(aes(x = n_sites, y = scbd),
 
 Sites_plt
 
-ggsave('Sites_plt.png', Sites_plt, units = 'cm', width = 30, height = 25)
+# ggsave('Sites_plt.png', Sites_plt, units = 'cm', width = 30, height = 25)
 
 Rabundance_plt <- ggplot(data = species) + 
   labs(x = "Relative Total Abundance", 
@@ -146,13 +146,13 @@ Rabundance_plt <- ggplot(data = species) +
 
 Rabundance_plt
 
-ggsave('Rabundance_plt.png', Rabundance_plt, units = 'cm', width = 30, height = 25)
+# ggsave('Rabundance_plt.png', Rabundance_plt, units = 'cm', width = 30, height = 25)
 
-SCBD_mod <- plot_grid(Rabundance_plt, Sites_plt, ncol=1, nrow= 2,
+SCBD_mod <- plot_grid(Rabundance_plt, Sites_plt, ncol=2, nrow= 1,
                       labels = "AUTO", label_size = 12, hjust = -4.8)
 SCBD_mod
 
-ggsave('SCBD_mod.png', SCBD_mod, units = 'cm', width = 20, height = 25)
+ggsave('SCBD_mod.png', SCBD_mod, units = 'cm', width = 19, height = 8)
 
 # Local contribution to beta diversity --------------------------
 # Beta Regression Predictors Set Up
