@@ -1,4 +1,4 @@
-# Species and local contribution to beta diversity: Baseline conditions of Ubatumirim Bay ichthyofauna
+# Exploring local and species contributions to beta diversity in Ubatumirim Bay's marine fish community: A baseline assessment
 
 This is a repository with the data analysis codes of the developed work, aiming better reproducibility. It hasn't been published it, so the repository is available only for the development of the first author master's thesis.
 
